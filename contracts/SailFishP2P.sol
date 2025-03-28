@@ -120,8 +120,9 @@ contract SailFishP2P {
 
     // Receive function to accept native EDU
     receive() external payable {
-        // Only accept payments from approved merchants for now
+        // Only accept payments from approved and non-frozen merchants
         require(merchants[msg.sender].isApproved, "Only approved merchants can send EDU");
+        require(!merchants[msg.sender].isFrozen, "Frozen merchants cannot send EDU");
         merchants[msg.sender].totalBalance += msg.value;
         emit EDUDeposited(msg.sender, msg.value);
     }
@@ -325,10 +326,13 @@ contract SailFishP2P {
     // User functions
     function createOrder(uint256 adId, uint256 amount) external returns (uint256) {
         Ad storage ad = ads[adId];
-        require(ad.isActive && !ad.isPaused, "Ad not active or paused");
+        require(ad.isActive && !ads[adId].isPaused, "Ad not active or paused");
         require(ad.merchant != msg.sender, "Cannot create order for own ad");
         require(amount >= ad.minAmount && amount <= ad.maxAmount, "Amount outside allowed range");
         require(amount <= ad.remainingBalance, "Insufficient ad balance");
+        
+        // Check if merchant is frozen
+        require(!merchants[ad.merchant].isFrozen, "Merchant is frozen");
         
         uint256 orderId = nextOrderId++;
         orders[orderId] = Order({

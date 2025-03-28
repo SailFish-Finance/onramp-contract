@@ -86,6 +86,48 @@ describe("SailFishP2P", function () {
       ).to.be.revertedWith("Merchant is frozen");
     });
 
+    it("Should prevent frozen merchants from closing ads", async function () {
+      // Create an ad
+      adId = await createAd();
+      
+      // Freeze the merchant
+      await sailFishP2P.connect(admin).setMerchantFreezeStatus(merchant.address, true);
+      
+      // Try to close the ad
+      await expect(
+        sailFishP2P.connect(merchant).closeAd(adId)
+      ).to.be.revertedWith("Merchant is frozen");
+    });
+
+    it("Should prevent frozen merchants from sending EDU to contract", async function () {
+      // Approve the merchant first
+      await sailFishP2P.connect(admin).approveMerchant(other.address);
+      
+      // Freeze the merchant
+      await sailFishP2P.connect(admin).setMerchantFreezeStatus(other.address, true);
+      
+      // Try to send EDU to the contract
+      await expect(
+        other.sendTransaction({
+          to: sailFishP2P.getAddress(),
+          value: ethers.parseEther("1")
+        })
+      ).to.be.revertedWith("Frozen merchants cannot send EDU");
+    });
+    
+    it("Should prevent creating orders for frozen merchants' ads", async function () {
+      // Create an ad
+      adId = await createAd();
+      
+      // Freeze the merchant
+      await sailFishP2P.connect(admin).setMerchantFreezeStatus(merchant.address, true);
+      
+      // Try to create an order for the frozen merchant's ad
+      await expect(
+        sailFishP2P.connect(buyer).createOrder(adId, ORDER_AMOUNT)
+      ).to.be.revertedWith("Merchant is frozen");
+    });
+
     it("Should allow admin to transfer admin rights", async function () {
       // Transfer admin rights to another address
       await sailFishP2P.connect(admin).transferAdmin(other.address);

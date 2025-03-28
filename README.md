@@ -173,6 +173,11 @@ sequenceDiagram
 
 - Strict access control for admin and merchant functions
 - Admin transfer functionality for multisig wallet setup
+- Merchant freezing prevents:
+  - Creating new ads
+  - Closing existing ads
+  - Sending EDU to the contract
+  - Users creating orders for frozen merchants' ads
 - Balance verification before accepting orders
 - Reentrancy protection for all fund transfers
 - Secure handling of native EDU token
