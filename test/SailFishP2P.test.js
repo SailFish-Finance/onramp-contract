@@ -85,6 +85,27 @@ describe("SailFishP2P", function () {
         )
       ).to.be.revertedWith("Merchant is frozen");
     });
+
+    it("Should allow admin to transfer admin rights", async function () {
+      // Transfer admin rights to another address
+      await sailFishP2P.connect(admin).transferAdmin(other.address);
+      
+      // Verify the new admin
+      expect(await sailFishP2P.admin()).to.equal(other.address);
+      
+      // Verify the old admin can no longer perform admin functions
+      await expect(
+        sailFishP2P.connect(admin).approveMerchant(merchant.address)
+      ).to.be.revertedWith("Only admin can call this function");
+      
+      // Verify the new admin can perform admin functions
+      const newMerchantAddress = buyer.address; // Using buyer as a new merchant for this test
+      await sailFishP2P.connect(other).approveMerchant(newMerchantAddress);
+      
+      // Verify the new merchant is approved
+      const newMerchantData = await sailFishP2P.merchants(newMerchantAddress);
+      expect(newMerchantData.isApproved).to.equal(true);
+    });
   });
 
   describe("Ad Management", function () {

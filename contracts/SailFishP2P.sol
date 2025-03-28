@@ -84,6 +84,7 @@ contract SailFishP2P {
     
     event EDUDeposited(address indexed merchant, uint256 amount);
     event EDUWithdrawn(address indexed recipient, uint256 amount);
+    event AdminTransferred(address indexed oldAdmin, address indexed newAdmin);
 
     // Modifiers
     modifier onlyAdmin() {
@@ -142,6 +143,14 @@ contract SailFishP2P {
     function setChallengePeriod(uint256 newPeriod) external onlyAdmin {
         require(newPeriod > 0, "Challenge period must be greater than 0");
         challengePeriod = newPeriod;
+    }
+
+    function transferAdmin(address newAdmin) external onlyAdmin {
+        require(newAdmin != address(0), "New admin cannot be zero address");
+        require(newAdmin != admin, "New admin is the same as current admin");
+        address oldAdmin = admin;
+        admin = newAdmin;
+        emit AdminTransferred(oldAdmin, newAdmin);
     }
 
     function resolveDispute(uint256 orderId, address winner) external onlyAdmin orderExists(orderId) {

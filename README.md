@@ -172,6 +172,7 @@ sequenceDiagram
 ## Security Features
 
 - Strict access control for admin and merchant functions
+- Admin transfer functionality for multisig wallet setup
 - Balance verification before accepting orders
 - Reentrancy protection for all fund transfers
 - Secure handling of native EDU token
