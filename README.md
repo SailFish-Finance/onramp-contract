@@ -8,6 +8,9 @@ SailFishP2P is a decentralized escrow service built for the EDUCHAIN network. It
 
 The contract provides a secure and transparent way to handle the escrow process, with features for merchant verification, ad management, order processing, and dispute resolution.
 
+## Contract Address
+- EDUCHAIN Mainnet: [0x6484eac89E507215Ae6cC07BAF6eB632aa2A46BF](https://educhain.blockscout.com/address/0x6484eac89E507215Ae6cC07BAF6eB632aa2A46BF?tab=contract)
+
 ## Architecture
 
 ### Main Components
@@ -221,7 +224,7 @@ npm install
 ### Testing
 
 ```bash
-npx hardhat test
+npx hardhat test test/SailFishP2P.test.js --network hardhat
 ```
 
 ### Deployment

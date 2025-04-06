@@ -1,10 +1,17 @@
+require("dotenv").config();
 require("@nomicfoundation/hardhat-toolbox");
+require("hardhat-gas-reporter");
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
   // Focus only on SailFishP2P contract
   paths: {
     sources: "./contracts",
+  },
+  gasReporter: {
+    enabled: true,
+    currency: "ETH",
+    showTimeSpent: true,
   },
   solidity: {
     version: "0.8.28",
